@@ -31,6 +31,17 @@ pipeline {
             }
         }
 
+    stage('Start Minikube if not running') {
+    steps {
+        sh '''
+        if ! minikube status | grep -q "apiserver: Running"; then
+            echo "Minikube is not running. Starting now..."
+            minikube start --driver=docker --memory=2048 --cpus=2
+        fi
+        '''
+    }
+}
+
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
